@@ -52,7 +52,7 @@ if __name__ == "__main__":
     cursor.execute("SELECT * FROM users")
     users = cursor.fetchall()
 
-    print("\n📋 Users in database:")
+    print("\n Users in database:")
     for user in users:
         print(dict(user))
 
