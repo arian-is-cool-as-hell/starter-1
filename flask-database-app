@@ -1,0 +1,175 @@
+import sqlite3
+
+
+
+def get_db_connection():
+
+    conn = sqlite3.connect(':memory:')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def init_database():
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            age INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+
+
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_username ON users(username)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_email ON users(email)')
+
+    conn.commit()
+    print(" Database initialized successfully (in RAM)")
+    return conn
+
+
+
+
+if __name__ == "__main__":
+
+    db = init_database()
+
+
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO users (username, email, age) VALUES (?, ?, ?)",
+                  ("alex", "alex@example.com", 25))
+    cursor.execute("INSERT INTO users (username, email, age) VALUES (?, ?, ?)",
+                  ("maria", "maria@example.com", 32))
+    db.commit()
+
+
+    cursor.execute("SELECT * FROM users")
+    users = cursor.fetchall()
+
+    print("\n📋 Users in database:")
+    for user in users:
+        print(dict(user))
+
+
+    db.close()
+
+
+******************************************************************************************************************************************************************************************************************************
+make a file like app.py sec part:
+from flask import Flask, render_template_string, request, jsonify
+import sqlite3
+
+app = Flask(__name__)
+
+
+
+def get_db():
+    conn = sqlite3.connect(':memory:', check_same_thread=False)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+
+def init_db():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            age INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    return conn
+
+
+db = init_db()
+
+
+HTML = '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SQLite In-Memory Database</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background: #f4f4f4; }
+        h1 { color: #333; }
+        table { border-collapse: collapse; width: 100%; background: white; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #007bff; color: white; }
+        input, button { padding: 8px; margin: 5px; }
+        button { background: #28a745; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1> SQLite Database (In RAM)</h1>
+
+    <h3>Add New User</h3>
+    <form action="/add" method="POST">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="number" name="age" placeholder="Age" required>
+        <button type="submit">Add User</button>
+    </form>
+
+    <h3>Users List</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Age</th>
+            <th>Created</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user['id'] }}</td>
+            <td>{{ user['username'] }}</td>
+            <td>{{ user['email'] }}</td>
+            <td>{{ user['age'] }}</td>
+            <td>{{ user['created_at'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+'''
+
+
+@app.route('/')
+def home():
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users ORDER BY id DESC")
+    users = cursor.fetchall()
+    return render_template_string(HTML, users=users)
+
+
+@app.route('/add', methods=['POST'])
+def add_user():
+    username = request.form['username']
+    email = request.form['email']
+    age = request.form['age']
+
+    try:
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO users (username, email, age) VALUES (?, ?, ?)",
+                       (username, email, age))
+        db.commit()
+        return '<script>alert("User added successfully!"); window.location="/";</script>'
+    except Exception as e:
+        return f'<script>alert("Error: {str(e)}"); window.location="/";</script>'
+
+
+if __name__ == '__main__':
+    print(" Server starting... Open this link in Chrome:")
+    print("   http://127.0.0.1:5000")
+    app.run(debug=True)
