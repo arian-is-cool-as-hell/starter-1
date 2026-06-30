@@ -120,7 +120,7 @@ class StudyingApp:
         frame = ttk.Frame(self.root, padding=50)
         frame.pack(expand=True, fill="both")
 
-        ttk.Label(frame, text="📚 StudyHub", font=("Helvetica", 42, "bold")).pack(pady=30)
+        ttk.Label(frame, text=" StudyHub", font=("Helvetica", 42, "bold")).pack(pady=30)
         ttk.Label(frame, text="Your Personal Study Companion", font=("Arial", 16)).pack(pady=8)
 
         ttk.Separator(frame).pack(fill="x", pady=25)
@@ -131,11 +131,11 @@ class StudyingApp:
         style = ttk.Style()
         style.configure("Big.TButton", font=("Arial", 14), padding=15)
 
-        ttk.Button(btn_frame, text="🚀 Start Application",
+        ttk.Button(btn_frame, text=" Start Application",
                   command=self.ask_to_start, style="Big.TButton").pack(pady=12, ipadx=40)
 
-        ttk.Button(btn_frame, text="ℹ️ About", command=self.show_about).pack(pady=5)
-        ttk.Button(btn_frame, text="❌ Exit", command=self.root.quit).pack(pady=5)
+        ttk.Button(btn_frame, text=" About", command=self.show_about).pack(pady=5)
+        ttk.Button(btn_frame, text=" Exit", command=self.root.quit).pack(pady=5)
 
     def ask_to_start(self):
         if messagebox.askyesno("Start StudyHub?", "Do you want to start the application now?"):
@@ -148,16 +148,16 @@ class StudyingApp:
         frame = ttk.Frame(self.root, padding=40)
         frame.pack(expand=True, fill="both")
 
-        ttk.Label(frame, text="🎉 Welcome to StudyHub!", font=("Helvetica", 28, "bold")).pack(pady=20)
+        ttk.Label(frame, text=" Welcome to StudyHub!", font=("Helvetica", 28, "bold")).pack(pady=20)
         ttk.Label(frame, text="7-Day Free Trial Activated", font=("Arial", 18, "bold"), foreground="green").pack(pady=10)
         ttk.Label(frame, text="After trial: $4.99 / month", font=("Arial", 14)).pack()
 
         price = ttk.LabelFrame(frame, text=" What You Get ", padding=20)
         price.pack(pady=30, fill="x", padx=50)
-        ttk.Label(price, text="✅ Unlimited Video Library\n✅ Progress Tracking\n✅ Personal Dashboard",
+        ttk.Label(price, text=" Unlimited Video Library\n Progress Tracking\n Personal Dashboard",
                  font=("Arial", 12)).pack(anchor="w", pady=10)
 
-        ttk.Button(frame, text="✅ Continue with Free Trial",
+        ttk.Button(frame, text=" Continue with Free Trial",
                   command=self.start_trial, style="Big.TButton").pack(pady=25, ipadx=30, ipady=10)
 
         ttk.Button(frame, text="← Back", command=self.show_start_menu).pack()
@@ -296,7 +296,7 @@ class StudyingApp:
         self.clear_window()
         top = ttk.Frame(self.root)
         top.pack(fill="x", padx=15, pady=8)
-        ttk.Label(top, text=f"👋 Welcome, {self.current_user}", font=("Arial", 16, "bold")).pack(side="left")
+        ttk.Label(top, text=f" Welcome, {self.current_user}", font=("Arial", 16, "bold")).pack(side="left")
         ttk.Button(top, text="Logout", command=self.show_start_menu).pack(side="right")
 
         notebook = ttk.Notebook(self.root)
@@ -310,14 +310,14 @@ class StudyingApp:
 
         btn_frame = ttk.Frame(videos_tab)
         btn_frame.pack(pady=8)
-        ttk.Button(btn_frame, text="➕ Add Video", command=self.add_new_video).pack(side="left", padx=5)
+        ttk.Button(btn_frame, text=" Add Video", command=self.add_new_video).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="▶ Play", command=self.play_selected_video).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="🗑 Delete", command=self.delete_video).pack(side="left", padx=5)
 
         self.load_videos()
 
-        notebook.add(ttk.Frame(notebook), text="📚 Courses")
-        notebook.add(ttk.Frame(notebook), text="📊 Progress")
+        notebook.add(ttk.Frame(notebook), text=" Courses")
+        notebook.add(ttk.Frame(notebook), text=" Progress")
 
     def load_videos(self):
         try:
